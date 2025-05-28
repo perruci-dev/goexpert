@@ -74,7 +74,7 @@ func pedirCotacao() Cotacao {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		if ctx.Err() == context.DeadlineExceeded {
-			fmt.Println("Tempo do contexto excedido")
+			fmt.Println("Tempo do contexto para resposta da API excedido")
 		}
 		log.Fatal(err)
 	}
@@ -97,10 +97,10 @@ func salvarCotacao(cotacao Cotacao) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
 	defer cancel()
 
-	err := db.WithContext(ctx).Create(cotacao).Error
+	err := db.WithContext(ctx).Table("cotacoes").Create(cotacao).Error
 	if err != nil {
 		if ctx.Err() == context.DeadlineExceeded {
-			fmt.Println("Tempo do contexto excedido")
+			fmt.Println("Tempo do contexto para persistir no db excedido")
 		}
 		log.Fatal(err)
 	}
